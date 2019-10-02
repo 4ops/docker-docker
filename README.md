@@ -14,22 +14,41 @@ Docker version 19.03.2, build 6a30dfca03
 GitLab CI/CD pipeline job example:
 
 ```yml
-build:
+variables:
+  DOCKER_TLS_CERTDIR: ""
+
+Build on Docker host:
   stage: build
   image: 4ops/docker
-  # --- Uncomment lines below for kubernetes executor
-  # variables:
-  #   KUBERNETES_PRIVILEGED: "true"
-  #   DOCKER_HOST: tcp://localhost:2375
-  #   DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:dind
   tags:
     - docker
   before_script:
     - login-gitlab-registry
     - docker --version
-  after_script:
-    - docker logout ${CI_REGISTRY}
   script:
     - docker build -t ${CI_REGISTRY_IMAGE} .
-    - docker push ${CI_REGISTRY_IMAGE}
+    - push-image ${CI_REGISTRY_IMAGE}
+  after_script:
+    - docker logout ${CI_REGISTRY}
+
+Build in Kubernetes:
+  stage: build
+  image: 4ops/docker
+  services:
+    - docker:dind
+  tags:
+    - kubernetes
+  variables:
+    KUBERNETES_PRIVILEGED: "true"
+    DOCKER_HOST: tcp://localhost:2375
+  before_script:
+    - login-gitlab-registry
+    - docker --version
+  script:
+    - docker build -t ${CI_REGISTRY_IMAGE} .
+    - push-image ${CI_REGISTRY_IMAGE}
+  after_script:
+    - docker logout ${CI_REGISTRY}
 ```
