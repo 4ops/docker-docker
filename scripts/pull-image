@@ -1,0 +1,3 @@
+#!/bin/sh
+
+docker pull "$@" | grep -e 'Pulling from' -e Digest -e Status

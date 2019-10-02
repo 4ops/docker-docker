@@ -1,0 +1,3 @@
+#!/bin/sh
+
+docker push "$@" | grep -e 'The push' -e digest
