@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo -n "${CI_JOB_TOKEN}" | docker login ${CI_REGISTRY} -u gitlab-ci-token --password-stdin
