@@ -17,6 +17,11 @@ GitLab CI/CD pipeline job example:
 build:
   stage: build
   image: 4ops/docker
+  # --- Uncomment lines below for kubernetes executor
+  # variables:
+  #   KUBERNETES_PRIVILEGED: "true"
+  #   DOCKER_HOST: tcp://localhost:2375
+  #   DOCKER_TLS_CERTDIR: ""
   tags:
     - docker
   before_script:
